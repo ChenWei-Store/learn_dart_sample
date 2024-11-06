@@ -2,7 +2,7 @@
  * @Author: cc
  * @Date: 2024-11-04 22:35:40
  * @LastEditors: cc
- * @LastEditTime: 2024-11-04 23:24:52
+ * @LastEditTime: 2024-11-06 23:20:27
  * @Description: 类
  */
 
@@ -155,9 +155,146 @@ class Person8 {
   }
 }
 
-// 9.类的继承和超参数
+// 9.类的继承和超参数（不支持多继承）
 class Student extends Person8 {
   String? school;
   // 调用父类的构造函数
   Student(super.age, this.school);
+}
+
+//mixins(组合，在多个不相关的类中复用一组方法的场景)
+//mixin修饰的类不能有构造函数，不能继承其他类或混入其他 mixin
+mixin Logging {
+  void log(String message) {
+    print('LOG: $message');
+  }
+}
+
+class User {
+  String name;
+
+  User(this.name);
+}
+
+class Admin extends User with Logging {
+  Admin(super.name);
+}
+
+// mixins class (用于定义一个既可以作为 mixin 被其他类使用，又可以独立实例化的类)
+
+mixin class Logging2 {
+  void log(String message) {
+    print('LOG: $message');
+  }
+}
+
+class Rectangle {
+  double _width;
+  double _height;
+
+  // Constructor
+  Rectangle(this._width, this._height);
+
+  // Getter for width
+  double get width => _width;
+
+  // Setter for width
+  set width(double value) {
+    if (value > 0) {
+      _width = value;
+    } else {
+      throw ArgumentError('Width must be positive');
+    }
+  }
+
+  // Getter for height
+  double get height => _height;
+
+  // Setter for height
+  set height(double value) {
+    if (value > 0) {
+      // 附加行为：记录日志
+      print('height: $value');
+      _height = value;
+    } else {
+      throw ArgumentError('Height must be positive');
+    }
+  }
+
+  // 计算属性：面积
+  double get area => _width * _height;
+
+  // 计算属性：周长
+  double get perimeter => 2 * (_width + _height);
+}
+
+// 抽象类abstract与继承extends，实现implements
+// abstract修饰的类只有抽象方法时可以被extends也可以被implements
+//abstract修饰的类既有抽象方法又有具体方法时只可以被extends
+
+abstract class Doer1 {
+  // Define instance variables and methods...
+
+  void doSomething(); // Define an abstract method.
+
+  void print() {}
+}
+
+class EffectiveDoer1 extends Doer1 {
+  @override
+  void doSomething() {
+    // Provide an implementation, so the method is not abstract here...
+  }
+}
+
+abstract class Doer2 {
+  // Define instance variables and methods...
+
+  void doSomething(); // Define an abstract method.
+}
+
+class EffectiveDoer implements Doer2 {
+  @override
+  void doSomething() {
+    // Provide an implementation, so the method is not abstract here...
+  }
+}
+
+//简单枚举
+class ColorfulGreeting {
+  final Color color;
+  final String message;
+
+  ColorfulGreeting(this.color, this.message);
+
+  void printGreeting() {
+    switch (color) {
+      case Color.red:
+        print('Red: $message');
+        break;
+      case Color.green:
+        print('Green: $message');
+        break;
+      case Color.blue:
+        print('Blue: $message');
+        break;
+    }
+  }
+}
+
+enum Color { red, green, blue }
+
+// 增强枚举
+
+enum WeatherType {
+  sunny("sun.png", "Sunny"),
+  rainy('rain.png', 'Rainy'),
+  cloudy('cloud.png', 'Cloudy');
+
+  final String icon;
+  final String description;
+
+  const WeatherType(this.icon, this.description);
+  // 具体方法
+  String getFullDescription() => '$description weather';
 }
